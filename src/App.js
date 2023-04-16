@@ -1,8 +1,53 @@
 import Data from "./rfo1.json";
-import SchoolCodes from './schoolcodesxl.json'
+import SchoolCodes from './codes.json'
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 function App() {
+  // for(let i of Data["Ümumi"]){
+  //   if(i["utis_code"]===1670649){
+  //     console.log(i)
+  //   }
+  // }
+  // 1670649
+  const [numberOfGirl,setnumberOfGirl] = React.useState(null);
+  const [numberOfBoy,setnumberOfBoy] = React.useState(null);
+  const FindNumOfGirl = (data) => {
+    let count = 0;
+    for(let i of data){
+      if(i.ataadi.split(" ")[1] === "qızı"){
+        count+=1
+      }
+
+    }
+    setnumberOfGirl(count);
+  }
+  const FindNumOfBoy = (data) => {
+    let count = 0;
+    for(let i of data){
+      if(i.ataadi.split(" ")[1] === "oğlu"){
+        count+=1
+      }
+
+    }
+    setnumberOfBoy(count);
+  }
+  // FindNumOfGirl(Data["Ümumi"]);
+  const ShowGirl = () => {
+    FindNumOfGirl(Data["Ümumi"])
+    setTimeout(()=>{
+      setnumberOfGirl(null)
+
+    },2000)
+    
+  }
+  const ShowBoy = () => {
+    FindNumOfBoy(Data["Ümumi"])
+    setTimeout(()=>{
+      setnumberOfBoy(null)
+
+    },2000)
+  }
+  console.log(numberOfGirl)
   
   const ShowSchoolCode = (school_name) => {
     for(let i of SchoolCodes){
@@ -11,6 +56,7 @@ function App() {
       }
     }
   }
+  // console.log(ShowSchoolCode("Xəlilli kənd tam orta məktəb"))
   // console.log(ShowSchoolCode("Naxçıvan şəhər Kimya-Biologiya Təmayüllü Lisey"))
   // console.log(Data["Ümumi"].length)
   const ClearString = (val) => {
@@ -115,30 +161,30 @@ function App() {
     // console.log(searcingvalue,syntaxval);
     if (syntaxval === "ad") {
       setSearchingData(
-        Data["Ümumi"].filter(
-          (obj) => ClearString(obj["ad"]) === searcingvalue.toLocaleLowerCase()
+        Data.filter(
+          (obj) => ClearString(obj["ASA"].split(" ")[0]) === searcingvalue.toLocaleLowerCase()
         )
       );
       // console.log(Data.filter(obj=>ClearString(obj["Ad"]).toLowerCase()===searcingvalue.toLowerCase()))
     } else if (syntaxval === "ata_adı") {
       setSearchingData(
-        Data["Ümumi"].filter(
+        Data.filter(
           (obj) =>
-            ClearString(obj["ataadi"]) === searcingvalue.toLocaleLowerCase()
+            ClearString(obj["ASA"].split(" ")[2]) === searcingvalue.toLocaleLowerCase()
         )
       );
     } else if (syntaxval === "soyad") {
       setSearchingData(
-        Data["Ümumi"].filter(
+        Data.filter(
           (obj) =>
-            ClearString(obj["soyad"]) === searcingvalue.toLocaleLowerCase()
+            ClearString(obj["ASA"].split(" ")[1]) === searcingvalue.toLocaleLowerCase()
         )
       );
     } else if (syntaxval === "utis_kod") {
       setSearchingData(
-        Data["Ümumi"].filter(
+        Data.filter(
           (obj) =>
-            ClearString(obj["utis_code"]) === String(searcingvalue.toLocaleLowerCase())
+            String(ClearString(obj["UTİS"])) === String(searcingvalue.toLocaleLowerCase())
         )
       );
     }
@@ -151,16 +197,15 @@ function App() {
       <div key={ind} className="user">
         <pre>
           <strong style={{ fontSize: "15px" }}>{ind + 1}-</strong>{" "}
-          <strong>Ad:</strong>
-          <i >{user["ad"]}</i>|<strong>Soyad:</strong>
-          <i>{user["soyad"]}</i>|<strong>Ata adı:</strong>
-          <i>{user["ataadi"]}</i>|<strong>Rayon kodu:</strong>
-          <i>{user["rayon"]}</i>|<strong>Utis kodu:</strong>
-          <i>{user["utis_code"]}</i>|<strong>Sinif:</strong>
-          <i>{user["sinif"]}</i>|<strong>Bölmə:</strong>
-          <i>{user["tedris dili"]}</i>|<strong>Fənn:</strong>
-          <i>{user["istiqamet"]}</i>|<strong>Məktəb:</strong>
-          <i>{ShowSchoolCode(user["mekteb"])}</i>|
+          |<strong>Ad:</strong>
+          <i >{user["ASA"].split(" ")[0]}</i>|<strong>Soyad:</strong>
+          <i>{user["ASA"].split(" ")[1]}</i>|<strong>Ata adı:</strong>
+          <i>{user["ASA"].split(" ")[2]}</i>|<strong>Mekteb kodu:</strong>
+          <i>{user["Məktəb kodu"]}</i>|<strong>Utis kodu:</strong>
+          <i style={{color:"white"}}>{user["UTİS"]}</i>|<strong>Sinif:</strong>
+          <i>{user["Sinif"]}</i>|<strong>Bölmə:</strong>
+          <i>{user["Bölmə"]}</i>|
+
           
         </pre>
       </div>
@@ -217,9 +262,15 @@ function App() {
       );
     }
   };
-
+  const [dt,setDt] = useState("");
+  const handleClick = () => {
+    setDt(SchoolCodes[0]["Məktəbin adı"])
+  }
   return (
     <div className="App">
+      <button onClick={handleClick}>Click test</button>
+      {dt}
+      <button style={{backgroundColor:"white",marginTop:"10px"}} onClick={ShowBoy}>{numberOfBoy?numberOfBoy:"Oğlan"}</button><button style={{backgroundColor:"white" ,marginTop:"10px"}} onClick={ShowGirl}>{numberOfGirl?numberOfGirl:"Qız"}</button>
       <h1>Excel Cədvəlində Sürətli Axtarış</h1>
       <div className="searchingvalue">{Buttons}</div>
 
