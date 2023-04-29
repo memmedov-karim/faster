@@ -79,7 +79,7 @@ function App() {
     {
       ad: "Ad",
       id: "1",
-      color: "unset",
+      color: "green",
       value: "ad",
     },
     {
@@ -118,9 +118,29 @@ function App() {
       color: "unset",
       value: "soyad_ata_adı",
     },
+    {
+      ad:"Məktəb",
+      id: "8",
+      color:"unset",
+      value:"school"
+    },
+    {
+      ad:"məktəb/ad",
+      id: "9",
+      color:"unset",
+      value:"school_name"
+    },
+    {
+      ad:"məktəb/utis",
+      id: "10",
+      color: "unset",
+      value: "school_utis"
+
+
+    }
   ]);
   const [SearchingData, setSearchingData] = React.useState(null);
-  const [syntaxval, setSyntaxval] = React.useState("");
+  const [syntaxval, setSyntaxval] = React.useState("ad");
   const [searcingvalue, setSearchingValue] = React.useState("");
   const [onefield, setonefield] = React.useState(true);
   const [firstnonefieldplaceholder, setfirstnonefieldplaceholder] =
@@ -131,13 +151,14 @@ function App() {
     setSearchingValue(e.target.value);
   };
 
-  const [placeholder, setPlaceHolder] = React.useState("");
+  const [placeholder, setPlaceHolder] = React.useState("ad");
   const GetSearchingAndBack = (e, id) => {
     if (
       e.target.value === "ad" ||
       e.target.value === "ata_adı" ||
       e.target.value === "soyad" ||
-      e.target.value === "utis_kod"
+      e.target.value === "utis_kod" || 
+      e.target.value === "school"
     ) {
       setonefield(true);
     } else {
@@ -162,7 +183,7 @@ function App() {
     if (syntaxval === "ad") {
       setSearchingData(
         Data.filter(
-          (obj) => ClearString(obj["ASA"].split(" ")[0]) === searcingvalue.toLocaleLowerCase()
+          (obj) => ClearString(obj["ASA"].split(" ")[0]).toLocaleLowerCase() === searcingvalue.toLocaleLowerCase()
         )
       );
       // console.log(Data.filter(obj=>ClearString(obj["Ad"]).toLowerCase()===searcingvalue.toLowerCase()))
@@ -170,47 +191,44 @@ function App() {
       setSearchingData(
         Data.filter(
           (obj) =>
-            ClearString(obj["ASA"].split(" ")[2]) === searcingvalue.toLocaleLowerCase()
+            ClearString(obj["ASA"].split(" ")[2]).toLocaleLowerCase() === searcingvalue.toLocaleLowerCase()
         )
       );
     } else if (syntaxval === "soyad") {
       setSearchingData(
         Data.filter(
           (obj) =>
-            ClearString(obj["ASA"].split(" ")[1]) === searcingvalue.toLocaleLowerCase()
+            ClearString(obj["ASA"].split(" ")[1]).toLocaleLowerCase() === searcingvalue.toLocaleLowerCase()
         )
       );
     } else if (syntaxval === "utis_kod") {
       setSearchingData(
         Data.filter(
           (obj) =>
-            String(ClearString(obj["UTİS"])) === String(searcingvalue.toLocaleLowerCase())
+          //String(ClearString(obj["UTİS"]).toLocaleLowerCase())
+          String(ClearString(obj["UTİS"]).toLocaleLowerCase()).includes(String(searcingvalue.toLocaleLowerCase()))
+            
         )
       );
+    }
+    else if (syntaxval === "school"){
+
+      setSearchingData(
+        Data.filter(
+          (obj) =>
+          //String(ClearString(obj["UTİS"]).toLocaleLowerCase())
+          String(ClearString(obj["Məktəb kodu"]).toLocaleLowerCase()).includes(String(searcingvalue.toLocaleLowerCase()))
+            
+        )
+      );
+
     }
     // console.log(SearchingData);
     setSearchingValue("");
   };
 
-  const Students = SearchingData?.map((user, ind) => {
-    return (
-      <div key={ind} className="user">
-        <pre>
-          <strong style={{ fontSize: "15px" }}>{ind + 1}-</strong>{" "}
-          |<strong>Ad:</strong>
-          <i >{user["ASA"].split(" ")[0]}</i>|<strong>Soyad:</strong>
-          <i>{user["ASA"].split(" ")[1]}</i>|<strong>Ata adı:</strong>
-          <i>{user["ASA"].split(" ")[2]}</i>|<strong>Mekteb kodu:</strong>
-          <i>{user["Məktəb kodu"]}</i>|<strong>Utis kodu:</strong>
-          <i style={{color:"white"}}>{user["UTİS"]}</i>|<strong>Sinif:</strong>
-          <i>{user["Sinif"]}</i>|<strong>Bölmə:</strong>
-          <i>{user["Bölmə"]}</i>|
-
-          
-        </pre>
-      </div>
-    );
-  });
+  // console.log("113").includes(String(ClearString("12113").toLocaleLowerCase())))
+  
 
   const Buttons = ButtonsSet.map((btn, ind) => {
     return (
@@ -240,19 +258,19 @@ function App() {
       setSearchingData(
         Data.filter(
           (obj) =>
-            ClearString(obj["ASA"].split(" ")[0]) === firstnonefield.toLocaleLowerCase() &&
-            ClearString(obj["ASA"].split(" ")[1]) === secondnonefield.toLocaleLowerCase()
+            ClearString(obj["ASA"].split(" ")[0]).toLocaleLowerCase() === firstnonefield.toLocaleLowerCase() &&
+            ClearString(obj["ASA"].split(" ")[1]).toLocaleLowerCase() === secondnonefield.toLocaleLowerCase()
         )
       );
     } else if (syntaxval === "ad_ata_adı") {
       setSearchingData(
         Data.filter(
           (obj) =>
-            ClearString(obj["ASA"].split(" ")[0]) === firstnonefield.toLocaleLowerCase() &&
-            ClearString(obj["ASA"].split(" ")[2]) === secondnonefield.toLocaleLowerCase()
+            ClearString(obj["ASA"].split(" ")[0]).toLocaleLowerCase() === firstnonefield.toLocaleLowerCase() &&
+            ClearString(obj["ASA"].split(" ")[2]).toLocaleLowerCase() === secondnonefield.toLocaleLowerCase()
         )
       );
-    } else {
+    } else if (syntaxval === "soyad_ata_adı") {
       setSearchingData(
         Data.filter(
           (obj) =>
@@ -261,29 +279,127 @@ function App() {
         )
       );
     }
+    else if (syntaxval === "school_name"){
+      setSearchingData(
+        Data.filter(
+          (obj) =>
+          String(ClearString(obj["Məktəb kodu"]).toLocaleLowerCase()).includes(String(firstnonefield.toLocaleLowerCase())) &&
+            ClearString(obj["ASA"].split(" ")[0]).toLocaleLowerCase() === secondnonefield.toLocaleLowerCase()
+        )
+      );
+
+    }
+    else{
+      setSearchingData(
+        Data.filter(
+          (obj) =>
+          String(ClearString(obj["Məktəb kodu"]).toLocaleLowerCase()).includes(String(firstnonefield.toLocaleLowerCase())) &&
+          String(ClearString(obj["UTİS"]).toLocaleLowerCase()).includes(String(secondnonefield.toLocaleLowerCase()))
+        )
+      );
+
+    }
   };
-  const [dt,setDt] = useState("");
-  const handleClick = () => {
-    setDt(SchoolCodes[0]["Məktəbin adı"])
+  const goArti = () => {
+    window.location.href = "https://arti.edu.az/"
   }
+  const [searchingData,setData] = useState({
+    ad:"",
+    soyad:"",
+    ata:"",
+    utis:"",
+    məktəb:"",
+    bölmə:"",
+    sinif:""
+  })
+  const getData = (e) => {
+    const {name,value} = e.target;
+    setData(prev=>{
+      return {
+        ...prev,
+        [name]:value
+      }
+    })
+  }
+  const find = (e) => {
+    e.preventDefault();
+    console.log(searchingData["ad"])
+    const keys = Object.keys(searchingData);
+    let res = ""
+    for(let i of keys){
+      res+=searchingData[i]
+
+    }
+    if(res!==""){
+
+    
+    const data = Data.filter(
+      (obj) => ClearString(obj["Ad"]).toLocaleLowerCase().includes(searchingData["ad"].toLocaleLowerCase()) && ClearString(obj["Soyad"]).toLocaleLowerCase().includes(searchingData["soyad"].toLocaleLowerCase()) && ClearString(obj["Ata adı"]).toLocaleLowerCase().includes(ClearString(searchingData["ata"]).toLocaleLowerCase()) && String(ClearString(obj["Utis"]).toLocaleLowerCase()).includes(searchingData["utis"].toLocaleLowerCase()) &&
+      String(ClearString(obj["Məktəb kodu"]).toLocaleLowerCase()).includes(String(searchingData["məktəb"].toLocaleLowerCase())) && ClearString(obj["Bölmə"]).toLocaleLowerCase().includes(searchingData["bölmə"].toLocaleLowerCase()) && String(ClearString(obj["sinif"]).toLocaleLowerCase()).includes(searchingData["sinif"].toLocaleLowerCase())
+    );
+
+    // console.log(res) 
+    setSearchingData(data);
+    }
+    setData({
+      ad:"",
+      soyad:"",
+      ata:"",
+      utis:"",
+      məktəb:"",
+      bölmə:"",
+      sinif:""
+    })
+    
+  }
+  const Students = SearchingData?.map((user, ind) => {
+    return (
+      <div key={ind} className="user">
+        <div className="content">
+          <div className="itm">{ind+1}-</div>
+          <div className="itm">Ad:{user["Ad"]};</div>
+          <div className="itm">Soyad:{user["Soyad"]} </div>
+          <div className="itm">Ata:{user["Ata adı"]} </div>
+          <div className="itm">Məktəb:{user["Məktəb kodu"]} </div>
+          <div className="itm">Utis:{user["Utis"]} </div>
+          <div className="itm">Sinif:{user["sinif"]} </div>
+          <div className="itm">Bölmə:{user["Bölmə"]}</div>
+        </div>
+      </div>
+    );
+  });
   return (
     <div className="App">
-      <button onClick={handleClick}>Click test</button>
-      {dt}
-      <button style={{backgroundColor:"white",marginTop:"10px"}} onClick={ShowBoy}>{numberOfBoy?numberOfBoy:"Oğlan"}</button><button style={{backgroundColor:"white" ,marginTop:"10px"}} onClick={ShowGirl}>{numberOfGirl?numberOfGirl:"Qız"}</button>
-      <h1>Excel Cədvəlində Sürətli Axtarış</h1>
-      <div className="searchingvalue">{Buttons}</div>
+      
+      {/* <div className="searchingvalue">{Buttons}</div> */}
+      <form onSubmit={find}>
+  <div className="form-row">
+    <input onChange={getData} type="text" placeholder="Ad" name="ad" value={searchingData.ad}/>
+    <input onChange={getData} type="text" placeholder="Soyad" name="soyad" value={searchingData.soyad}/>
+    <input onChange={getData} type="text" placeholder="Ata" name="ata" value={searchingData.ata}/>
+    <input onChange={getData} type="text" placeholder="Utis" name="utis" value={searchingData.utis}/>
+  </div>
+  <div className="form-row">
+    <input onChange={getData} type="text" placeholder="Məktəb" name="məktəb" value={searchingData.məktəb}/>
+    <input onChange={getData} type="text" placeholder="Bölmə" name="bölmə" value={searchingData.bölmə}/>
+    <input onChange={getData} type="text" placeholder="Sinif" name="sinif" value={searchingData.sinif}/>
+    <input type="submit" value="Axtar"/>
+  </div>
+</form>
 
-      {onefield && (
+      
+
+
+      {/* {onefield && (
         <form onSubmit={SearchData}>
           <input
             value={searcingvalue}
             onChange={GetSearchingValue}
             placeholder={placeholder}
           />
-        </form>
-      )}
-      {!onefield && (
+        </form> 
+      )} */}
+      {/* {!onefield && (
         <form onSubmit={SearchNoneField}>
           <input
             value={firstnonefield}
@@ -298,7 +414,7 @@ function App() {
           />
           <button type="submit">axtar</button>
         </form>
-      )}
+      )} */}
       {SearchingData && <div className="general">{Students}</div>}
       {SearchingData !== null && SearchingData.length === 0 ? (
         <div className="general">
